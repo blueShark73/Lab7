@@ -3,6 +3,9 @@ package com.itmo.utils;
 import com.itmo.app.*;
 import com.itmo.client.User;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -12,13 +15,24 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * Исполнение запросов и т.п.
  */
 public class DataBaseManager {
-    //Test for local Database
+    //For Database
     private static final String DB_URL = "jdbc:postgresql://pg:5432/studs";
-    private static final String USER = "s285572";
-    private static final String PASS = "iym938";
+    private static String USER;
+    private static String PASS;
+    private static final String FILE_WITH_ACCOUNT = "account";
     private static final String TABLE_NAME = "studygroups";
     private static final String USERS_TABLE = "users";
     private static final String pepper = "1@#$&^%$)3";
+
+    static {
+        try (FileReader fileReader = new FileReader(FILE_WITH_ACCOUNT);
+             BufferedReader reader = new BufferedReader(fileReader)) {
+            USER = reader.readLine();
+            PASS = reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private Statement statement;
     private PassEncoder passEncoder;
@@ -128,20 +142,20 @@ public class DataBaseManager {
 
     public void addUser(User user) {
         String hash = passEncoder.getHash(user.getPass());
-        String query = "INSERT INTO "+USERS_TABLE+" VALUES("+decorate(user.getName())+", "+decorate(hash)+")";
-        try{
+        String query = "INSERT INTO " + USERS_TABLE + " VALUES(" + decorate(user.getName()) + ", " + decorate(hash) + ")";
+        try {
             statement.execute(query);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public boolean containsUser(User user) {
         String hash = passEncoder.getHash(user.getPass());
-        String query = "SELECT * FROM "+USERS_TABLE+" WHERE name="+decorate(user.getName())+" AND password="+decorate(hash);
-        try{
+        String query = "SELECT * FROM " + USERS_TABLE + " WHERE name=" + decorate(user.getName()) + " AND password=" + decorate(hash);
+        try {
             return statement.executeQuery(query).next();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -167,9 +181,9 @@ public class DataBaseManager {
 
     public int removeAll(String userName) {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE OWNER=" + decorate(userName);
-        try{
+        try {
             return statement.executeUpdate(query);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
@@ -192,7 +206,7 @@ public class DataBaseManager {
                 ", location_name=" + decorate(studyGroup.getGroupAdmin().getLocation().getName()) + " WHERE ID=" + id;
         try {
             return statement.executeUpdate(query);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
