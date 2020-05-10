@@ -10,6 +10,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.concurrent.*;
 
+/**
+ * класс сервера
+ */
 public class Server {
     private DatagramChannel channel;
     private byte[] buffer;
@@ -25,11 +28,11 @@ public class Server {
         channel = DatagramChannel.open();
         channel.configureBlocking(false);
         channel.bind(address);
-        setByeMessage("Сервер закончил работу...");
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("Сервер закончил работу...")));
     }
 
-    //чтение полученных данных и отправка ответа
-    public void run(Application application) throws IOException {
+    //создание нового потока для обработки запроса при каждом новом запросе
+    public void run(Application application) {
         try {
             Callable<SocketAddress> task = getTask();
             ExecutorService service = Executors.newFixedThreadPool(2);
@@ -45,17 +48,10 @@ public class Server {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        finally {
-            System.out.println("Сервер завершает работу...");
-            channel.close();
-        }
     }
 
-    private void setByeMessage(String message){
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println(message)));
-    }
-
-    private Callable<SocketAddress> getTask(){
+    //получение запроса
+    private Callable<SocketAddress> getTask() {
         return () -> {
             ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);
             SocketAddress socketAddress;

@@ -30,7 +30,7 @@ public class ExecuteScriptCommand extends Command implements CommandWithInit {
         } catch (NullPointerException e) {
             System.out.println("Не найден активный клиент...");
         }
-        status="Такого скрипта не существует!!! Все скрипты должны лежать на одном уровне с jar или src.";
+        status = "Такого скрипта не существует!!! Все скрипты должны лежать на одном уровне с jar или src.";
     }
 
     /**

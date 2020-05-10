@@ -7,6 +7,9 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.*;
 
+/**
+ * запуск сервера
+ */
 public class Main {
     public static final Logger log = LogManager.getLogger();
 

@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class RemoveCommand extends Command implements CommandWithInit {
     private Long id;
 
+    //валидация id
     public void init(String argument, Scanner scanner) {
         if (!FieldsValidator.checkStringParseToLong(argument, "id - это целое число!!!"))
             throw new InputFormatException();

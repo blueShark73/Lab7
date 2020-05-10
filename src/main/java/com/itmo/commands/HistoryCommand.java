@@ -6,7 +6,7 @@ import lombok.NonNull;
 
 
 /**
- * выводит последние 9 команд
+ * выводит последние 9 команд текущего пользователя
  */
 public class HistoryCommand extends Command {
     @Override

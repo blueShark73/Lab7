@@ -7,6 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * хеширование пароля с перцем
+ */
 @AllArgsConstructor
 @Getter
 public class PassEncoder {

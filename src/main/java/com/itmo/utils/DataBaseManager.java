@@ -24,6 +24,8 @@ public class DataBaseManager {
     private static final String USERS_TABLE = "users";
     private static final String pepper = "1@#$&^%$)3";
 
+
+    //читаем данные аккаунта для входа подключения к бд, ищем драйвер
     static {
         try (FileReader fileReader = new FileReader(FILE_WITH_ACCOUNT);
              BufferedReader reader = new BufferedReader(fileReader)) {
@@ -46,6 +48,7 @@ public class DataBaseManager {
     private Statement statement;
     private PassEncoder passEncoder;
 
+    //оборачиваем в кавычки для запросов
     private String decorate(String string) {
         return string == null ? null : "'" + string + "'";
     }
@@ -69,6 +72,7 @@ public class DataBaseManager {
         this(DB_URL, USER, PASS);
     }
 
+    //загрузка коллекции в память
     public CopyOnWriteArraySet<StudyGroup> getCollectionFromDatabase() throws SQLException {
         ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_NAME);
         CopyOnWriteArraySet<StudyGroup> collection = new CopyOnWriteArraySet<>();
@@ -100,6 +104,7 @@ public class DataBaseManager {
         return collection;
     }
 
+    //добаление нового элемента
     public synchronized boolean addGroup(StudyGroup studyGroup) {
         try {
             long id = generate_id();
@@ -128,6 +133,7 @@ public class DataBaseManager {
         }
     }
 
+    //удаление элемента по id
     public synchronized int remove(long id) {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE ID=" + id;
         try {
@@ -138,6 +144,7 @@ public class DataBaseManager {
         }
     }
 
+    //добавление нового пользователя
     public synchronized void addUser(User user) {
         String hash = passEncoder.getHash(user.getPass());
         String query = "INSERT INTO " + USERS_TABLE + " VALUES(" + decorate(user.getName()) + ", " + decorate(hash) + ")";
@@ -148,6 +155,7 @@ public class DataBaseManager {
         }
     }
 
+    //ищем пользователя
     public synchronized boolean containsUser(User user) {
         String hash = passEncoder.getHash(user.getPass());
         String query = "SELECT * FROM " + USERS_TABLE + " WHERE name=" + decorate(user.getName()) + " AND password=" + decorate(hash);
@@ -159,6 +167,7 @@ public class DataBaseManager {
         }
     }
 
+    //ищем пользователя только по имени
     public synchronized boolean containsUserName(String name) {
         String query = "SELECT * FROM " + USERS_TABLE + " WHERE NAME=" + decorate(name);
         try {
@@ -170,6 +179,7 @@ public class DataBaseManager {
         }
     }
 
+    //генерируем id с помощью sequence
     public synchronized long generate_id() throws SQLException {
         String query = "SELECT NEXTVAL('GENERATE_ID')";
         ResultSet resultSet = statement.executeQuery(query);
@@ -177,6 +187,7 @@ public class DataBaseManager {
         return resultSet.getLong("nextval");
     }
 
+    //удаляем все элементы, принадлежащие пользователю
     public synchronized int removeAll(String userName) {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE OWNER=" + decorate(userName);
         try {
@@ -187,6 +198,7 @@ public class DataBaseManager {
         }
     }
 
+    //обновляем поля элемента
     public synchronized int update(long id, StudyGroup studyGroup) {
         String query = "UPDATE " + TABLE_NAME + " SET name=" + decorate(studyGroup.getName()) +
                 ", coordinate_x=" + studyGroup.getCoordinates().getX() +

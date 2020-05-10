@@ -2,6 +2,9 @@ package com.itmo.utils;
 
 import java.util.Random;
 
+/**
+ * генерируем пароли для ленивых пользователей
+ */
 public class SimplePasswordGenerator {
     private static String LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

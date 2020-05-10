@@ -51,6 +51,9 @@ public class Handler {
         commands = new HashMap<>();
     }
 
+    /**
+     * список команд по умолчанию для авторизованного пользователя
+     */
     public void setDefaultPack(){
         removeAllCommands();
         addCommand(new AddCommand().toString(), new AddCommand());

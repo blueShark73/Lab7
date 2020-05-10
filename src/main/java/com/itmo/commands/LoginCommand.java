@@ -10,9 +10,13 @@ import java.io.Console;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * команда для авторизации пользователя
+ */
 public class LoginCommand extends Command implements CommandWithInit {
     private User userForLogin;
 
+    //авторизация, если такой пользователь зарегистрирован
     @Override
     public String execute(Application application, Session session) {
         if (application.getDataBaseManager().containsUser(userForLogin)) {
@@ -41,8 +45,9 @@ public class LoginCommand extends Command implements CommandWithInit {
         return true;
     }
 
+    //просим пароль
     @Override
-    public void init(String argument, Scanner scanner) throws IOException {
+    public void init(String argument, Scanner scanner) {
         String pass;
         Console console = System.console();
         do {

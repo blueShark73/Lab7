@@ -16,7 +16,7 @@ public class InfoCommand extends Command {
         if (!application.getCollection().isEmpty()) {
             result.append("Тип данных, хранимых в коллекции: ").append(application.getCollection().iterator().next().getClass()).append("\n");
         }
-        return result.deleteCharAt(result.length()-1).toString();
+        return result.deleteCharAt(result.length() - 1).toString();
     }
 
     @Override

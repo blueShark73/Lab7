@@ -9,7 +9,7 @@ import lombok.NonNull;
  */
 public class ExitCommand extends Command {
     /**
-     * установим флаг выхода, остальное условности
+     * удаляем сессию пользователя
      */
     @Override
     public String execute(Application application, @NonNull Session session) {

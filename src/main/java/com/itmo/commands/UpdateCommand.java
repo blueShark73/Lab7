@@ -13,9 +13,10 @@ import java.util.Scanner;
 /**
  * команда обновит значения всех полей элемента с данным id
  */
-public class UpdateCommand extends Command implements CommandWithInit{
+public class UpdateCommand extends Command implements CommandWithInit {
     private StudyGroup studyGroup;
 
+    //просим ввести клиента поля
     public void init(String argument, Scanner scanner) {
         try {
             if (!FieldsValidator.checkStringParseToLong(argument, "id - это целое число!!!"))
@@ -38,12 +39,13 @@ public class UpdateCommand extends Command implements CommandWithInit{
     public String execute(Application application, @NonNull Session session) {
         studyGroup.setOwner(session.getUser());
         try {
-            if (!application.getCollection().removeIf(studyGroup -> studyGroup.getId() == this.studyGroup.getId()) && studyGroup.getOwner().equals(session.getUser()) || !(application.getDataBaseManager().update(studyGroup.getId(), studyGroup)>0)) {
-                if(application.getCollection().stream().noneMatch(studyGroup1 -> studyGroup1.getId()==this.studyGroup.getId())) throw new IdNotFoundException("Элемент нельзя обновить, т.к. элемента с таким id нет в коллекции");
+            if (!application.getCollection().removeIf(studyGroup -> studyGroup.getId() == this.studyGroup.getId()) && studyGroup.getOwner().equals(session.getUser()) || !(application.getDataBaseManager().update(studyGroup.getId(), studyGroup) > 0)) {
+                if (application.getCollection().stream().noneMatch(studyGroup1 -> studyGroup1.getId() == this.studyGroup.getId()))
+                    throw new IdNotFoundException("Элемент нельзя обновить, т.к. элемента с таким id нет в коллекции");
                 throw new IdNotFoundException("Элемент нельзя обновить, т.к. он не принадлежит вам");
             }
             application.getCollection().add(studyGroup);
-            return "Элемент с id "+studyGroup.getId()+" обновлён";
+            return "Элемент с id " + studyGroup.getId() + " обновлён";
         } catch (IdNotFoundException e) {
             return e.getMessage();
         }

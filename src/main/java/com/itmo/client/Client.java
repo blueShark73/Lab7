@@ -9,7 +9,9 @@ import com.itmo.server.Response;
 import java.io.*;
 import java.net.*;
 
-
+/**
+ * класс клиента
+ */
 public class Client {
     private SocketAddress socketAddress;
     private DatagramSocket socket;
@@ -30,6 +32,7 @@ public class Client {
         this.handler = handler;
     }
 
+    //подключаемся к заданному порту и хосту
     public void connect(String host, int port) throws IOException {
         try {
             InetAddress address = InetAddress.getByName(host);
@@ -43,6 +46,7 @@ public class Client {
         }
     }
 
+    //отправляем команду и ждем ответа
     public void sendCommandAndReceiveAnswer(Command command) {
         try {
             command.setUser(user);

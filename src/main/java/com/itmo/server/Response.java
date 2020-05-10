@@ -7,6 +7,9 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+/**
+ * класс того, что приходит клиенту в качестве ответа
+ */
 @AllArgsConstructor
 @Setter
 @Getter

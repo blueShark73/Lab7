@@ -6,6 +6,9 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+/**
+ * ох уж эти даты
+ */
 public class DateTimeAdapter {
     private static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 

@@ -8,10 +8,10 @@ import java.util.Scanner;
 /**
  * команда выведет элементы, значение поля name которых начинается с заданной подстроки
  */
-public class FilterStartsWithNameCommand extends Command implements CommandWithInit{
+public class FilterStartsWithNameCommand extends Command implements CommandWithInit {
     private String argument;
 
-    public void init(String argument, Scanner scanner){
+    public void init(String argument, Scanner scanner) {
         this.argument = argument;
     }
 
@@ -21,10 +21,10 @@ public class FilterStartsWithNameCommand extends Command implements CommandWithI
     @Override
     public String execute(Application application, Session session) {
         StringBuilder result = new StringBuilder();
-        if(application.getCollection().isEmpty()) return "Коллекция пуста...";
-        application.getSortedCollection().stream().filter(studyGroup -> new StringBuffer(studyGroup.getName()).indexOf(argument)==0)
+        if (application.getCollection().isEmpty()) return "Коллекция пуста...";
+        application.getSortedCollection().stream().filter(studyGroup -> new StringBuffer(studyGroup.getName()).indexOf(argument) == 0)
                 .forEach(studyGroup -> result.append(studyGroup.toString()).append("\n"));
-        return result.length()>0 ? result.deleteCharAt(result.length() - 1).toString() : "Таких элементов в коллекции нет";
+        return result.length() > 0 ? result.deleteCharAt(result.length() - 1).toString() : "Таких элементов в коллекции нет";
     }
 
     @Override

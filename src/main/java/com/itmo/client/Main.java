@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * маршаллизация входных данных, создание обработчика команд и установка команд для него, создание приложения и его запуск
+ * запуск клиента
  */
 public class Main {
     private static Client activeClient = null;

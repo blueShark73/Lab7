@@ -9,6 +9,9 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
+/**
+ * поток для отправки клиенту ответа
+ */
 @AllArgsConstructor
 public class SenderThread extends Thread {
     private DatagramChannel datagramChannel;

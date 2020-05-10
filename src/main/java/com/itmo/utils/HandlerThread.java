@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.channels.DatagramChannel;
 
+/**
+ * поток для обработки запроса от клиента
+ */
 @AllArgsConstructor
 public class HandlerThread extends Thread {
     private Application application;

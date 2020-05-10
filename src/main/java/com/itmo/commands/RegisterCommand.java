@@ -14,10 +14,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * команда для регистрации пользователей
+ */
 @Getter
 public class RegisterCommand extends Command implements CommandWithInit {
     private User userForRegistration;
 
+    //регистрируем, если ник уникален
     @Override
     public String execute(Application application, Session session) {
         if (!application.getDataBaseManager().containsUserName(userForRegistration.getName())) {
@@ -47,24 +51,26 @@ public class RegisterCommand extends Command implements CommandWithInit {
         return true;
     }
 
+    //просим пароль или генерируем его в файл самостоятельно
     @Override
     public void init(String argument, Scanner scanner) throws IOException {
+        if (!FieldsValidator.checkChars(argument, true, true))
+            throw new IndexOutOfBoundsException("Имя пользователя может состоять только из букв русского и английского алфавита!!!");
         String pass;
         Console console = System.console();
         do {
             System.out.println("Хотите, чтобы пароль сгенерировался автоматически?(y/n)");
             String answer = console.readLine().toLowerCase();
-            if(answer.equals("y") || answer.equals("yes") || answer.equals("д")){
+            if (answer.equals("y") || answer.equals("yes") || answer.equals("д")) {
                 SimplePasswordGenerator generator = new SimplePasswordGenerator(true, true, true, true);
                 pass = generator.generate(6, 19);
                 File file = new File(argument);
-                if (file.createNewFile()){
+                if (file.createNewFile()) {
                     FileWriter fileWriter = new FileWriter(file);
-                    fileWriter.write(pass+'\n');
+                    fileWriter.write(pass + '\n');
                     fileWriter.flush();
-                    System.out.println("Ваш сгенерированный пароль находится в файле "+argument);
-                }
-                else System.out.println("Ваш сгенерированный пароль: "+pass);
+                    System.out.println("Ваш сгенерированный пароль находится в файле " + argument);
+                } else System.out.println("Ваш сгенерированный пароль: " + pass);
                 break;
             }
             System.out.println("Введите пароль для регистрации(от 6 до 20 символов):");

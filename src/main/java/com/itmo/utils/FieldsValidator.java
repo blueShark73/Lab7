@@ -46,7 +46,7 @@ public class FieldsValidator {
      * @param min              - нижняя граница
      * @param max              - верхняя граница
      * @param messageIfInvalid - сообщение об ошибке
-     * @param canBeNull - может ли поле быть null
+     * @param canBeNull        - может ли поле быть null
      */
     public static boolean checkNumber(Long number, long min, long max, String messageIfInvalid, boolean canBeNull) {
         try {
@@ -58,5 +58,17 @@ public class FieldsValidator {
             System.out.println(messageIfInvalid);
             return false;
         }
+    }
+
+    public static boolean checkChars(String field, boolean russian, boolean numbers) {
+        for (char c : field.toCharArray()) {
+            if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') && !russian && !numbers) return false;
+            if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') && !(c >= 'а' && c <= 'я') && !(c >= 'А' && c <= 'Я') && !numbers)
+                return false;
+            if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') && !russian && !(c >= '0' && c <= '9')) return false;
+            if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') && !(c >= 'а' && c <= 'я') && !(c >= 'А' && c <= 'Я') && !(c >= '0' && c <= '9'))
+                return false;
+        }
+        return true;
     }
 }
