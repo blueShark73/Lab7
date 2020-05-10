@@ -26,8 +26,14 @@ public class HandlerThread extends Thread {
             Command command = new SerializationManager<Command>().readObject(data);
             log.info("Server receive command " + command.toString());
             Session session = application.getSession(command.getUser());
-            String result = command.execute(application, session);
-            if(session!=null) session.getHistory().add(command);
+            String result;
+            try {
+                result = command.execute(application, session);
+                if (session != null) session.getHistory().add(command);
+            } catch (NullPointerException e){
+                result = "Ошибка на сервере. Команда не выполнена" +
+                        "\nАктивная сессия не найлена, видимо сервер отключился на некоторое время, перезапустите клиента";
+            }
             Response response = new Response(result, command.getUser());
             log.info("Command " + command.toString() + " is completed, send an answer to the client");
             new SenderThread(datagramChannel, socketAddress, response).start();

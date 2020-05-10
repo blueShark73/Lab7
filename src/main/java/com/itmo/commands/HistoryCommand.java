@@ -2,13 +2,15 @@ package com.itmo.commands;
 
 import com.itmo.app.Application;
 import com.itmo.server.Session;
+import lombok.NonNull;
+
 
 /**
  * выводит последние 9 команд
  */
 public class HistoryCommand extends Command {
     @Override
-    public String execute(Application application, Session session) {
+    public String execute(Application application, @NonNull Session session) {
         return session.getHistory().getHistory();
     }
 

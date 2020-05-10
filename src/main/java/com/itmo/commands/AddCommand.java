@@ -5,6 +5,7 @@ import com.itmo.server.Session;
 import com.itmo.utils.FieldsValidator;
 import com.itmo.app.StudyGroup;
 import com.itmo.exceptions.InputFormatException;
+import lombok.NonNull;
 
 import java.util.Scanner;
 
@@ -24,7 +25,7 @@ public class AddCommand extends Command implements CommandWithInit{
      * @param application - текущее приложение
      */
     @Override
-    public String execute(Application application, Session session) {
+    public String execute(Application application, @NonNull Session session) {
         studyGroup.setOwner(session.getUser());
         if(!application.getDataBaseManager().addGroup(studyGroup)) return "Элемент не добвлен. Проверьте корректность данных";
         application.getIdList().add(studyGroup.getId());

@@ -2,13 +2,14 @@ package com.itmo.commands;
 
 import com.itmo.app.Application;
 import com.itmo.server.Session;
+import lombok.NonNull;
 
 /**
  * команда добавляет элемент, если он больше максимального элемента коллекции
  */
 public class AddIfMaxCommand extends AddCommand {
     @Override
-    public String execute(Application application, Session session) {
+    public String execute(Application application, @NonNull Session session) {
         studyGroup.setOwner(session.getUser());
         if (studyGroup.compareTo(application.getMaxStudyGroup()) > 0 && application.getDataBaseManager().addGroup(studyGroup)) {
             application.getCollection().add(studyGroup);

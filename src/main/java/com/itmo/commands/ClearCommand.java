@@ -2,13 +2,14 @@ package com.itmo.commands;
 
 import com.itmo.app.Application;
 import com.itmo.server.Session;
+import lombok.NonNull;
 
 /**
  * команда очищает коллекцию
  */
 public class ClearCommand extends Command {
     @Override
-    public String execute(Application application, Session session) {
+    public String execute(Application application, @NonNull Session session) {
         int result = application.getDataBaseManager().removeAll(session.getUser());
         if(result>0){
             application.getCollection().forEach(studyGroup -> {

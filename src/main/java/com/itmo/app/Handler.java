@@ -77,12 +77,7 @@ public class Handler {
      */
     public void run(Scanner scanner) {
         try {
-            Runtime.getRuntime().addShutdownHook(new Thread(){
-                @Override
-                public void run(){
-                    client.sendCommandAndReceiveAnswer(new ExitCommand());
-                }
-            });
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> client.sendCommandAndReceiveAnswer(new ExitCommand())));
             while (!exitCommand && scanner.hasNext()) {
                 try {
                     //ищем в следующей строке команду, вдруг она не в начале строки

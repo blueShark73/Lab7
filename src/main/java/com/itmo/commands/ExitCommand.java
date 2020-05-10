@@ -2,6 +2,7 @@ package com.itmo.commands;
 
 import com.itmo.app.Application;
 import com.itmo.server.Session;
+import lombok.NonNull;
 
 /**
  * команда закрытия приложения
@@ -11,7 +12,7 @@ public class ExitCommand extends Command {
      * установим флаг выхода, остальное условности
      */
     @Override
-    public String execute(Application application, Session session) {
+    public String execute(Application application, @NonNull Session session) {
         application.removeSession(user, session);
         return "Выход из приложения...";
     }

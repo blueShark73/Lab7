@@ -32,6 +32,15 @@ public class DataBaseManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Connection to PostgreSQL JDBC");
+        try {
+            Class.forName("org.postgresql.Driver");
+            System.out.println("PostgreSQL JDBC Driver successfully connected");
+        } catch (ClassNotFoundException e) {
+            System.out.println("PostgreSQL JDBC Driver is not found. Include it in your library path");
+            e.printStackTrace();
+        }
     }
 
     private Statement statement;
@@ -58,17 +67,6 @@ public class DataBaseManager {
 
     public DataBaseManager() {
         this(DB_URL, USER, PASS);
-    }
-
-    static {
-        System.out.println("Connection to PostgreSQL JDBC");
-        try {
-            Class.forName("org.postgresql.Driver");
-            System.out.println("PostgreSQL JDBC Driver successfully connected");
-        } catch (ClassNotFoundException e) {
-            System.out.println("PostgreSQL JDBC Driver is not found. Include it in your library path");
-            e.printStackTrace();
-        }
     }
 
     public CopyOnWriteArraySet<StudyGroup> getCollectionFromDatabase() throws SQLException {
@@ -102,7 +100,7 @@ public class DataBaseManager {
         return collection;
     }
 
-    public boolean addGroup(StudyGroup studyGroup) {
+    public synchronized boolean addGroup(StudyGroup studyGroup) {
         try {
             long id = generate_id();
             String query = "INSERT INTO " + TABLE_NAME + " VALUES(" + id + ", "
@@ -130,7 +128,7 @@ public class DataBaseManager {
         }
     }
 
-    public int remove(long id) {
+    public synchronized int remove(long id) {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE ID=" + id;
         try {
             return statement.executeUpdate(query);
@@ -140,7 +138,7 @@ public class DataBaseManager {
         }
     }
 
-    public void addUser(User user) {
+    public synchronized void addUser(User user) {
         String hash = passEncoder.getHash(user.getPass());
         String query = "INSERT INTO " + USERS_TABLE + " VALUES(" + decorate(user.getName()) + ", " + decorate(hash) + ")";
         try {
@@ -150,7 +148,7 @@ public class DataBaseManager {
         }
     }
 
-    public boolean containsUser(User user) {
+    public synchronized boolean containsUser(User user) {
         String hash = passEncoder.getHash(user.getPass());
         String query = "SELECT * FROM " + USERS_TABLE + " WHERE name=" + decorate(user.getName()) + " AND password=" + decorate(hash);
         try {
@@ -161,7 +159,7 @@ public class DataBaseManager {
         }
     }
 
-    public boolean containsUserName(String name) {
+    public synchronized boolean containsUserName(String name) {
         String query = "SELECT * FROM " + USERS_TABLE + " WHERE NAME=" + decorate(name);
         try {
             ResultSet resultSet = statement.executeQuery(query);
@@ -172,14 +170,14 @@ public class DataBaseManager {
         }
     }
 
-    public long generate_id() throws SQLException {
+    public synchronized long generate_id() throws SQLException {
         String query = "SELECT NEXTVAL('GENERATE_ID')";
         ResultSet resultSet = statement.executeQuery(query);
         resultSet.next();
         return resultSet.getLong("nextval");
     }
 
-    public int removeAll(String userName) {
+    public synchronized int removeAll(String userName) {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE OWNER=" + decorate(userName);
         try {
             return statement.executeUpdate(query);
@@ -189,7 +187,7 @@ public class DataBaseManager {
         }
     }
 
-    public int update(long id, StudyGroup studyGroup) {
+    public synchronized int update(long id, StudyGroup studyGroup) {
         String query = "UPDATE " + TABLE_NAME + " SET name=" + decorate(studyGroup.getName()) +
                 ", coordinate_x=" + studyGroup.getCoordinates().getX() +
                 ", coordinate_y=" + studyGroup.getCoordinates().getY() +

@@ -5,6 +5,7 @@ import com.itmo.server.Session;
 import com.itmo.utils.FieldsValidator;
 import com.itmo.exceptions.IdNotFoundException;
 import com.itmo.exceptions.InputFormatException;
+import lombok.NonNull;
 
 import java.util.Scanner;
 
@@ -24,7 +25,7 @@ public class RemoveCommand extends Command implements CommandWithInit {
      * удаление элемента
      */
     @Override
-    public String execute(Application application, Session session) {
+    public String execute(Application application, @NonNull Session session) {
         try {
             if (application.getCollection().stream().noneMatch(studyGroup -> studyGroup.getOwner().equals(session.getUser()) && studyGroup.getId() == id) || !(application.getDataBaseManager().remove(id) > 0)) {
                 if(application.getCollection().stream().noneMatch(studyGroup -> studyGroup.getId()==id)) throw new IdNotFoundException("Элемент не удален, т.к. элемента с таким id нет в коллекции");

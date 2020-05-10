@@ -2,6 +2,7 @@ package com.itmo.utils;
 
 import com.itmo.server.Response;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -14,6 +15,7 @@ public class SenderThread extends Thread {
     private SocketAddress socketAddress;
     private Response response;
 
+    @SneakyThrows
     @Override
     public void run() {
         try {
@@ -22,6 +24,9 @@ public class SenderThread extends Thread {
             datagramChannel.send(byteBuffer, socketAddress);
         } catch (IOException e){
             e.printStackTrace();
+            Response response = new Response("Коллеция какая-то большая почистите её, а потом уже просите");
+            response.setUser(this.response.getUser());
+            datagramChannel.send(ByteBuffer.wrap(new SerializationManager<Response>().writeObject(response)), socketAddress);
         }
     }
 }

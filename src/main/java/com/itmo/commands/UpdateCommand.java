@@ -6,6 +6,7 @@ import com.itmo.utils.FieldsValidator;
 import com.itmo.app.StudyGroup;
 import com.itmo.exceptions.IdNotFoundException;
 import com.itmo.exceptions.InputFormatException;
+import lombok.NonNull;
 
 import java.util.Scanner;
 
@@ -34,7 +35,7 @@ public class UpdateCommand extends Command implements CommandWithInit{
      * обновляет поля
      */
     @Override
-    public String execute(Application application, Session session) {
+    public String execute(Application application, @NonNull Session session) {
         studyGroup.setOwner(session.getUser());
         try {
             if (!application.getCollection().removeIf(studyGroup -> studyGroup.getId() == this.studyGroup.getId()) && studyGroup.getOwner().equals(session.getUser()) || !(application.getDataBaseManager().update(studyGroup.getId(), studyGroup)>0)) {

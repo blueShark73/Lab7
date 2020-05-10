@@ -9,6 +9,8 @@ import com.itmo.utils.SimplePasswordGenerator;
 import lombok.Getter;
 
 import java.io.Console;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -55,7 +57,14 @@ public class RegisterCommand extends Command implements CommandWithInit {
             if(answer.equals("y") || answer.equals("yes") || answer.equals("д")){
                 SimplePasswordGenerator generator = new SimplePasswordGenerator(true, true, true, true);
                 pass = generator.generate(6, 19);
-                System.out.println("Ваш сгенерированный пароль: "+pass);
+                File file = new File(argument);
+                if (file.createNewFile()){
+                    FileWriter fileWriter = new FileWriter(file);
+                    fileWriter.write(pass+'\n');
+                    fileWriter.flush();
+                    System.out.println("Ваш сгенерированный пароль находится в файле "+argument);
+                }
+                else System.out.println("Ваш сгенерированный пароль: "+pass);
                 break;
             }
             System.out.println("Введите пароль для регистрации(от 6 до 20 символов):");
