@@ -1,11 +1,14 @@
 package com.itmo.app;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * текущий семестр для учебной группы
  */
+@Getter
 public enum Semester implements Serializable {
     THIRD("3"),
     FOURTH("4"),
@@ -29,9 +32,5 @@ public enum Semester implements Serializable {
         Semester semester = Arrays.stream(Semester.values()).filter(s -> s.nameInt.equals(value)).findAny().orElse(null);
         if(semester == null) System.out.println(messageIfNull);
         return semester;
-    }
-
-    public int getInt() {
-        return Integer.parseInt(nameInt);
     }
 }
