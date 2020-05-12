@@ -128,11 +128,11 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable {
         do {
             System.out.println("Введите номер семестра(3/4/5/6/8): ");
             nextLine = scanner.nextLine();
-        } while (Semester.getValue(nextLine, "Вводите корректный номер семестра из предложенных вариантов!!!") == null && !nextLine.equals(""));
+        } while (Semester.getValueByNumber(nextLine, "Вводите корректный номер семестра из предложенных вариантов!!!") == null && !nextLine.equals(""));
         if (nextLine.equals("")) {
             semesterEnum = null;
             System.out.println("Значение поля воспринято как null");
-        } else semesterEnum = Semester.getValue(nextLine, "");
+        } else semesterEnum = Semester.getValueByNumber(nextLine, "");
     }
 
     /**

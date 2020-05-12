@@ -94,7 +94,7 @@ public class DataBaseManager {
                     DateTimeAdapter.parseToZonedDateTime(resultSet.getDate("creation_date")),
                     studentsCount,
                     FormOfEducation.valueOf(resultSet.getString("form_of_education")),
-                    Semester.getValue(resultSet.getString("semester"), ""),
+                    Semester.valueOf(resultSet.getString("semester")),
                     person,
                     resultSet.getString("owner"),
                     new Scanner(System.in)
@@ -115,7 +115,7 @@ public class DataBaseManager {
                     + decorate(DateTimeAdapter.parseToSQLDate(studyGroup.getCreationDate())) + ", "
                     + studyGroup.getStudentsCount() + ", "
                     + decorate(studyGroup.getFormOfEducation().getEnglish()) + ", "
-                    + studyGroup.getSemesterEnum().getNameInt() + ", "
+                    + decorate(studyGroup.getSemesterEnum().getEnglish()) + ", "
                     + decorate(studyGroup.getGroupAdmin().getName()) + ", "
                     + studyGroup.getGroupAdmin().getHeight() + ", "
                     + studyGroup.getGroupAdmin().getWeight() + ", "
@@ -206,7 +206,7 @@ public class DataBaseManager {
                 ", creation_date=" + decorate(DateTimeAdapter.parseToSQLDate(studyGroup.getCreationDate())) +
                 ", students_count=" + studyGroup.getStudentsCount() +
                 ", form_of_education=" + decorate(studyGroup.getFormOfEducation().getEnglish()) +
-                ", semester=" + studyGroup.getSemesterEnum().getNameInt() +
+                ", semester=" + decorate(studyGroup.getSemesterEnum().getEnglish()) +
                 ", admin_name=" + decorate(studyGroup.getGroupAdmin().getName()) +
                 ", height=" + studyGroup.getGroupAdmin().getHeight() +
                 ", weight=" + studyGroup.getGroupAdmin().getWeight() +

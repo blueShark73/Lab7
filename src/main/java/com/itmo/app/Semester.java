@@ -1,5 +1,6 @@
 package com.itmo.app;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -9,28 +10,23 @@ import java.util.Arrays;
  * текущий семестр для учебной группы
  */
 @Getter
+@AllArgsConstructor
 public enum Semester implements Serializable {
-    THIRD("3"),
-    FOURTH("4"),
-    FIFTH("5"),
-    SIXTH("6"),
-    EIGHTH("8");
+    THIRD("THIRD"),
+    FOURTH("FOURTH"),
+    FIFTH("FIFTH"),
+    SIXTH("SIXTH"),
+    EIGHTH("EIGHTH");
 
-    private String nameInt;
+    private String english;
 
-    Semester(String nameInt) {
-        this.nameInt = nameInt;
-    }
-
-    /**
-     * аналог valueOf только еще и сообщением об ошибке
-     *
-     * @param value         - строка, которую ищем
-     * @param messageIfNull - сообщение, если не нашли
-     */
-    public static Semester getValue(String value, String messageIfNull) {
-        Semester semester = Arrays.stream(Semester.values()).filter(s -> s.nameInt.equals(value)).findAny().orElse(null);
-        if(semester == null) System.out.println(messageIfNull);
-        return semester;
+    public static Semester getValueByNumber(String number, String messageIfNull) {
+        try {
+            int numb = Integer.parseInt(number);
+            return Arrays.stream(Semester.values()).filter(f -> f.ordinal() + 1 == numb).findAny().orElse(null);
+        } catch (NumberFormatException e) {
+            System.out.println(messageIfNull);
+            return null;
+        }
     }
 }
