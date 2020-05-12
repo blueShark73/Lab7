@@ -17,6 +17,7 @@ public class Server {
     private DatagramChannel channel;
     private byte[] buffer;
     private static final int DEFAULT_BUFFER_SIZE = 65536;
+    private static final int READ_POOL_SIZE = 2;
 
     public Server() {
         buffer = new byte[DEFAULT_BUFFER_SIZE];
@@ -35,7 +36,7 @@ public class Server {
     public void run(Application application) {
         try {
             Callable<SocketAddress> task = getTask();
-            ExecutorService service = Executors.newFixedThreadPool(2);
+            ExecutorService service = Executors.newFixedThreadPool(READ_POOL_SIZE);
             while (true) {
                 Future<SocketAddress> result = service.submit(task);
                 SocketAddress socketAddress = result.get();
