@@ -7,7 +7,6 @@ import com.itmo.server.Session;
 import com.itmo.utils.FieldsValidator;
 
 import java.io.Console;
-import java.io.IOException;
 import java.util.Scanner;
 
 /**

@@ -1,6 +1,5 @@
 package com.itmo.utils;
 
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -16,7 +15,5 @@ public class DateTimeAdapter {
         return date.toLocalDate().atStartOfDay(ZoneId.systemDefault());
     }
 
-    public static String parseToSQLDate(ZonedDateTime zonedDateTime){
-        return dateFormat.format(Date.from(zonedDateTime.toInstant()));
-    }
+    //public static String parseToSQLDate(ZonedDateTime zonedDateTime){return dateFormat.format(Date.from(zonedDateTime.toInstant())); }
 }

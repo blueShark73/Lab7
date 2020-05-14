@@ -29,7 +29,8 @@ public class RemoveCommand extends Command implements CommandWithInit {
     public String execute(Application application, @NonNull Session session) {
         try {
             if (application.getCollection().stream().noneMatch(studyGroup -> studyGroup.getOwner().equals(session.getUser()) && studyGroup.getId() == id) || !(application.getDataBaseManager().remove(id) > 0)) {
-                if(application.getCollection().stream().noneMatch(studyGroup -> studyGroup.getId()==id)) throw new IdNotFoundException("Элемент не удален, т.к. элемента с таким id нет в коллекции");
+                if (application.getCollection().stream().noneMatch(studyGroup -> studyGroup.getId() == id))
+                    throw new IdNotFoundException("Элемент не удален, т.к. элемента с таким id нет в коллекции");
                 throw new IdNotFoundException("Элемент не удален, т.к. вы не являетесь владельцем этого элемента");
             }
             application.getCollection().removeIf(studyGroup -> studyGroup.getId() == id);
