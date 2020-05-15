@@ -1,6 +1,7 @@
 package com.itmo.commands;
 
 import com.itmo.app.Application;
+import com.itmo.app.builder.StudyGroupCheckBuilder;
 import com.itmo.server.Session;
 import com.itmo.utils.FieldsValidator;
 import com.itmo.app.StudyGroup;
@@ -37,14 +38,18 @@ public class AddCommand extends Command implements CommandWithInit{
      * инициализация, которая одинакова для трех команд
      */
     public StudyGroup executeInitialization(String argument, Scanner scanner) {
-        StudyGroup studyGroup = new StudyGroup();
-        if (scanner != null) studyGroup.setScanner(scanner);
         if (!FieldsValidator.checkNumber((long) argument.length(), 2, 19, "Некорректное имя элемента, оно должно быть из 2-19 знаков!!!", false))
             throw new InputFormatException();
-        studyGroup.setName(argument);
-        studyGroup.setFields();
-        studyGroup.setScanner(null);
-        return studyGroup;
+        StudyGroupCheckBuilder builder = new StudyGroupCheckBuilder(argument);
+        builder.setScanner(scanner);
+        builder.setCoordinates();
+        builder.setCreationDate();
+        builder.setStudentsCount();
+        builder.setFormOfEducation();
+        builder.setSemesterEnum();
+        builder.setGroupAdmin();
+        builder.setScanner(null);
+        return builder.getResult();
     }
 
     @Override

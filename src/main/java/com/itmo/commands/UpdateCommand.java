@@ -1,6 +1,7 @@
 package com.itmo.commands;
 
 import com.itmo.app.Application;
+import com.itmo.app.builder.StudyGroupCheckBuilder;
 import com.itmo.server.Session;
 import com.itmo.utils.FieldsValidator;
 import com.itmo.app.StudyGroup;
@@ -22,11 +23,18 @@ public class UpdateCommand extends Command implements CommandWithInit {
             if (!FieldsValidator.checkStringParseToLong(argument, "id - это целое число!!!"))
                 throw new InputFormatException();
             long id = Long.parseLong(argument);
-            studyGroup = new StudyGroup();
-            studyGroup.setId(id);
-            if (scanner != null) studyGroup.setScanner(scanner);
-            studyGroup.setAllFields();
-            studyGroup.setScanner(null);
+            StudyGroupCheckBuilder builder = new StudyGroupCheckBuilder();
+            builder.setId(id);
+            builder.setScanner(scanner);
+            builder.setName();
+            builder.setCoordinates();
+            builder.setCreationDate();
+            builder.setStudentsCount();
+            builder.setFormOfEducation();
+            builder.setSemesterEnum();
+            builder.setGroupAdmin();
+            builder.setScanner(null);
+            studyGroup = builder.getResult();
         } catch (NumberFormatException e) {
             System.out.println("Ошибка ввода, id - число!!!");
         }
