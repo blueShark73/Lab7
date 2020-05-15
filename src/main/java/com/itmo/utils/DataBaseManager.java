@@ -11,7 +11,7 @@ import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * Класс для работы с базой данных
+ * Синглтон для работы с базой данных
  * Исполнение запросов и т.п.
  */
 public class DataBaseManager {
@@ -47,9 +47,6 @@ public class DataBaseManager {
 
     private Connection connection;
     private PassEncoder passEncoder;
-
-    //оборачиваем в кавычки для запросов
-    //private String decorate(String string) {return string == null ? null : "'" + string + "'";}
 
     public DataBaseManager(String dbUrl, String user, String pass) {
         try {
@@ -126,24 +123,6 @@ public class DataBaseManager {
             statement.setLong(14, location.getY());
             statement.setString(15, location.getName());
             statement.setString(16, studyGroup.getOwner());
-            /*String query = "INSERT INTO " + TABLE_NAME + " VALUES(" + id + ", "
-                    + decorate(studyGroup.getName()) + ", "
-                    + studyGroup.getCoordinates().getX() + ", "
-                    + studyGroup.getCoordinates().getY() + ", "
-                    + decorate(DateTimeAdapter.parseToSQLDate(studyGroup.getCreationDate())) + ", "
-                    + studyGroup.getStudentsCount() + ", "
-                    + decorate(studyGroup.getFormOfEducation().getEnglish()) + ", "
-                    + decorate(studyGroup.getSemesterEnum().getEnglish()) + ", "
-                    + decorate(studyGroup.getGroupAdmin().getName()) + ", "
-                    + studyGroup.getGroupAdmin().getHeight() + ", "
-                    + studyGroup.getGroupAdmin().getWeight() + ", "
-                    + decorate(studyGroup.getGroupAdmin().getPassportID()) + ", "
-                    + studyGroup.getGroupAdmin().getLocation().getX() + ", "
-                    + studyGroup.getGroupAdmin().getLocation().getY() + ", "
-                    + decorate(studyGroup.getGroupAdmin().getLocation().getName()) + ", "
-                    + decorate(studyGroup.getOwner()) + ")";
-            statement.execute(query);
-             */
             studyGroup.setId(id);
             statement.execute();
             return true;
@@ -155,7 +134,6 @@ public class DataBaseManager {
 
     //удаление элемента по id
     public int remove(long id) {
-        //String query = "DELETE FROM " + TABLE_NAME + " WHERE ID=" + id;
         try {
             PreparedStatement statement = connection.prepareStatement("delete from " + TABLE_NAME + " where id=?");
             statement.setLong(1, id);
@@ -168,12 +146,13 @@ public class DataBaseManager {
 
     //добавление нового пользователя
     public void addUser(User user) {
-        String hash = passEncoder.getHash(user.getPass());
-        //String query = "INSERT INTO " + USERS_TABLE + " VALUES(" + decorate(user.getName()) + ", " + decorate(hash) + ")";
+        String salt = new SimplePasswordGenerator(true, true, true, true).generate(10, 10);
+        String hash = passEncoder.getHash(user.getPass() + salt);
         try {
-            PreparedStatement statement = connection.prepareStatement("insert into " + USERS_TABLE + " values (?, ?)");
+            PreparedStatement statement = connection.prepareStatement("insert into " + USERS_TABLE + " values (?, ?, ?)");
             statement.setString(1, user.getName());
             statement.setString(2, hash);
+            statement.setString(3, salt);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -182,12 +161,17 @@ public class DataBaseManager {
 
     //ищем пользователя
     public boolean containsUser(User user) {
-        String hash = passEncoder.getHash(user.getPass());
-        //String query = "SELECT * FROM " + USERS_TABLE + " WHERE name=" + decorate(user.getName()) + " AND password=" + decorate(hash);
         try {
-            PreparedStatement statement = connection.prepareStatement("select * from " + USERS_TABLE + " where name = ? and password = ?");
+            PreparedStatement statement = connection.prepareStatement("select * from " + USERS_TABLE + " where name = ?");
+            statement.setString(1, user.getName());
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) return false;
+            String salt = resultSet.getString("salt");
+            String hash = passEncoder.getHash(user.getPass() + salt);
+            statement = connection.prepareStatement("select * from " + USERS_TABLE + " where name = ? and password = ? and salt=?");
             statement.setString(1, user.getName());
             statement.setString(2, hash);
+            statement.setString(3, salt);
             return statement.executeQuery().next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -197,7 +181,6 @@ public class DataBaseManager {
 
     //ищем пользователя только по имени
     public boolean containsUserName(String name) {
-        //String query = "SELECT * FROM " + USERS_TABLE + " WHERE NAME=" + decorate(name);
         try {
             PreparedStatement statement = connection.prepareStatement("select * from " + USERS_TABLE + " where name = ?");
             statement.setString(1, name);
@@ -211,7 +194,6 @@ public class DataBaseManager {
 
     //генерируем id с помощью sequence
     public long generate_id() throws SQLException {
-        //String query = "SELECT NEXTVAL('GENERATE_ID')";
         PreparedStatement statement = connection.prepareStatement("select nextval('generate_id')");
         ResultSet resultSet = statement.executeQuery();
         resultSet.next();
@@ -220,7 +202,6 @@ public class DataBaseManager {
 
     //удаляем все элементы, принадлежащие пользователю
     public boolean removeAll(String userName) {
-        //String query = "DELETE FROM " + TABLE_NAME + " WHERE OWNER=" + decorate(userName);
         try {
             PreparedStatement statement = connection.prepareStatement("select from " + TABLE_NAME + " where owner=?");
             statement.setString(1, userName);
@@ -237,21 +218,6 @@ public class DataBaseManager {
         Person admin = studyGroup.getGroupAdmin();
         Location location = admin.getLocation();
         Coordinates coordinates = studyGroup.getCoordinates();
-        /*String query = "UPDATE " + TABLE_NAME + " SET name=" + decorate(studyGroup.getName()) +
-                ", coordinate_x=" + studyGroup.getCoordinates().getX() +
-                ", coordinate_y=" + studyGroup.getCoordinates().getY() +
-                ", creation_date=" + decorate(DateTimeAdapter.parseToSQLDate(studyGroup.getCreationDate())) +
-                ", students_count=" + studyGroup.getStudentsCount() +
-                ", form_of_education=" + decorate(studyGroup.getFormOfEducation().getEnglish()) +
-                ", semester=" + decorate(studyGroup.getSemesterEnum().getEnglish()) +
-                ", admin_name=" + decorate(studyGroup.getGroupAdmin().getName()) +
-                ", height=" + studyGroup.getGroupAdmin().getHeight() +
-                ", weight=" + studyGroup.getGroupAdmin().getWeight() +
-                ", passport_id=" + decorate(studyGroup.getGroupAdmin().getPassportID()) +
-                ", x_admin=" + studyGroup.getGroupAdmin().getLocation().getX() +
-                ", y_admin=" + studyGroup.getGroupAdmin().getLocation().getY() +
-              ", location_name=" + decorate(studyGroup.getGroupAdmin().getLocation().getName()) + " WHERE ID=" + id;
-              */
         try {
             PreparedStatement statement = connection.prepareStatement(
                     "update " + TABLE_NAME + " set name=?, coordinate_x=? , coordinate_y=?, creation_date=?, students_count=?, form_of_education=cast (? as form_of_education)," +
@@ -278,3 +244,4 @@ public class DataBaseManager {
         }
     }
 }
+
